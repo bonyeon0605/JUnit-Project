@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DataJpaTest // DB와 관련된 컴포넌트만 메모리에 로딩
 public class BookRepositoryTest {
@@ -84,5 +85,16 @@ public class BookRepositoryTest {
     // 4. 책 수정
 
     // 5. 책 삭제
+    @Test
+    public void 책삭제() {
+        // given
+        Long id = 1L;
+
+        // when
+        bookRepository.deleteById(id);
+
+        // then
+        assertFalse(bookRepository.findById(id).isPresent());
+    }
 
 }
