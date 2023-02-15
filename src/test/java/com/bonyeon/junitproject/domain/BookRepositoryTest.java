@@ -75,7 +75,7 @@ public class BookRepositoryTest {
         String author = "bonyeon";
 
         // when
-        Book bookPS = bookRepository.findAll().get(0); //todo findById(1L) 로 전체 테스트 시 실패 이유 찾기
+        Book bookPS = bookRepository.findById(1L).get(); //todo findById(1L) 로 전체 테스트 시 실패 이유 찾기
 
         // then
         assertEquals(title, bookPS.getTitle());
