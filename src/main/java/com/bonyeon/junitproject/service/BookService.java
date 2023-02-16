@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -34,7 +35,14 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
-    // 3. 책 한권 보기
+    // 3. 책 한건 보기
+    public BookRespDto 책한건보기(Long id) {
+        Optional<Book> bookOP = bookRepository.findById(id);
+        if (bookOP.isPresent()) {
+            return new BookRespDto().toDto(bookOP.get());
+        }
+        throw new RuntimeException("해당 아이디를 찾을 수 없습니다.");
+    }
 
     // 4. 책 삭제
 
