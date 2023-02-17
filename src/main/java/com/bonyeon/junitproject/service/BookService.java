@@ -51,4 +51,15 @@ public class BookService {
     }
 
     // 5. 책 수정
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void 책수정하기(Long id, BookSaveReqDto dto) {
+        Optional<Book> bookPS = bookRepository.findById(id);
+
+        if (bookPS.isPresent()) {
+            Book book = bookPS.get();
+            book.update(dto.getTitle(), dto.getAuthor());
+        } else {
+
+        }
+    }
 }

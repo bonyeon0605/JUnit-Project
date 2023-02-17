@@ -21,4 +21,10 @@ public class Book {
 
     @Column(length = 20, nullable = false)
     private String author;
+
+    public void update(String title, String author) {
+        this.title = title;
+        this.author = author;
+    }
+
 }
