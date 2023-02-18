@@ -2,6 +2,7 @@ package com.bonyeon.junitproject.service;
 
 import com.bonyeon.junitproject.domain.Book;
 import com.bonyeon.junitproject.domain.BookRepository;
+import com.bonyeon.junitproject.util.MailSender;
 import com.bonyeon.junitproject.web.dto.BookRespDto;
 import com.bonyeon.junitproject.web.dto.BookSaveReqDto;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,18 @@ import java.util.stream.Collectors;
 @Service
 public class BookService {
 
-    @Autowired
     private final BookRepository bookRepository;
+    private final MailSender mailSender;
 
     // 1. 책등록
     @Transactional(rollbackFor = RuntimeException.class)
     public BookRespDto 책등록하기(BookSaveReqDto dto) {
         Book savedBook = bookRepository.save(dto.toEntity());
-
+        if (savedBook != null) {
+            if (!mailSender.send()) {
+                throw new RuntimeException("메일이 전송되지 않습니다.");
+            }
+        }
         return new BookRespDto().toDto(savedBook);
     }
 
