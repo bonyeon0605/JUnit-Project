@@ -1,20 +1,28 @@
 package com.bonyeon.junitproject.service;
 
 import com.bonyeon.junitproject.domain.BookRepository;
-import com.bonyeon.junitproject.util.MailSenderStub;
+import com.bonyeon.junitproject.util.MailSender;
 import com.bonyeon.junitproject.web.dto.BookRespDto;
 import com.bonyeon.junitproject.web.dto.BookSaveReqDto;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-@DataJpaTest
+@ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
-
-    @Autowired
+    @InjectMocks // @Mock으로 선언된 가짜 정보를 주입받는다.
+    private BookService bookService;
+    @Mock // 가짜 환경에 띄우기
     private BookRepository bookRepository;
+    @Mock
+    private MailSender mailSender;
 
     // 문제점 -> 서비스 레이어만 테스트 하고 싶은데 레포지토리도 테스트가 진행된다.
     @Test
@@ -25,16 +33,17 @@ public class BookServiceTest {
         dto.setAuthor("bonyeon!!");
 
         // stub
-        MailSenderStub mailSenderStub = new MailSenderStub();
-        // 가짜로 bookRepository 만들기!!
+        when(bookRepository.save(any()))
+                .thenReturn(dto.toEntity());
+        when(mailSender.send())
+                .thenReturn(true);
 
         // when
-        BookService bookService = new BookService(bookRepository, mailSenderStub);
         BookRespDto bookRespDto = bookService.책등록하기(dto);
 
         // then
-        assertEquals(dto.getTitle(), bookRespDto.getTitle());
-        assertEquals(dto.getAuthor(), bookRespDto.getAuthor());
+        assertThat(dto.getTitle()).isEqualTo(bookRespDto.getTitle());
+        assertThat(dto.getAuthor()).isEqualTo(bookRespDto.getAuthor());
 
     }
 }
