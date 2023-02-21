@@ -1,5 +1,6 @@
 package com.bonyeon.junitproject.service;
 
+import com.bonyeon.junitproject.domain.Book;
 import com.bonyeon.junitproject.domain.BookRepository;
 import com.bonyeon.junitproject.util.MailSender;
 import com.bonyeon.junitproject.web.dto.BookRespDto;
@@ -9,6 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +48,20 @@ public class BookServiceTest {
         // then
         assertThat(dto.getTitle()).isEqualTo(bookRespDto.getTitle());
         assertThat(dto.getAuthor()).isEqualTo(bookRespDto.getAuthor());
+    }
+
+    @Test
+    public void 책목록보기_테스트() {
+        // stub
+        List<Book> books = Arrays.asList(new Book(1L, "junit강의", "bonyeon"), new Book(2L, "srping강의", "메타코딩"));
+
+        when(bookRepository.findAll()).thenReturn(books);
+
+        // when
+        List<BookRespDto> dtos = bookService.책목록보기();
+
+        // then
+        assertThat(dtos.get(0).getTitle()).isEqualTo("junit강의");
 
     }
 }
